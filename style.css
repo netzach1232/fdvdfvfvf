@@ -268,3 +268,12 @@ body {
     transform: scale(0.95);
     /* הקטנה קלה */
 }
+
+.fade-out {
+    opacity: 0;
+    /* הפיכת האלמנט לשקוף */
+    transition: opacity 1s ease-out;
+    /* אנימציה שתימשך שנייה אחת */
+    pointer-events: none;
+    /* מניעת אינטראקציה עם האלמנט במהלך ההתנדפות */
+}
