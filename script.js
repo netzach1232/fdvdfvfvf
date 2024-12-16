@@ -242,7 +242,7 @@ const songs = ["1.mp3", "2.mp3", "for.mp3", "4.mp3", "5.mp3", "6.mp3", "7.mp3", 
     "71.mp3", "72.mp3", "73.mp3", "74.mp3", "75.mp3", "76.mp3", "77.mp3", "78.mp3", "79.mp3", "80.mp3"];
 
 // נתיב הקבצים (אם הם נמצאים בתיקיית "SOUNDS")
-const basePath = "./SOUNDS/";
+const basePath = "./SOUNDS/1.mp3";
 
 // פונקציה לנגן שיר
 function playSong(index) {
