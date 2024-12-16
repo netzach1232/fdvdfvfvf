@@ -239,7 +239,7 @@ const songs = [
 ];
 
 // נתיב הקבצים (אם הם נמצאים בתיקיית "SOUNDS")
-const basePath = "const basePath = "https://netzach1232.github.io/your-repo/SOUNDS/";
+const basePath = "const basePath = "./SOUNDS/";
 ";
 
 // פונקציה לנגן שיר
