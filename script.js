@@ -1,4 +1,178 @@
-let scrollEnabled = true; // משתנה לסטטוס הגלילה
+document.addEventListener("DOMContentLoaded", () => {
+    const bpmInput = document.getElementById("bpm-input");
+    const startStopButton = document.getElementById("start-stop");
+    const indicator = document.getElementById("indicator");
+    let intervalId = null;
+
+    const playClickSound = () => {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        oscillator.type = "sine"; // טון פשוט
+        oscillator.frequency.setValueAtTime(1000, audioCtx.currentTime); // תדר ב-1000Hz
+        gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime);
+
+        oscillator.start();
+        setTimeout(() => {
+            oscillator.stop();
+        }, 100); // משך הצליל 100ms
+    };
+
+    const startMetronome = () => {
+        const bpm = parseInt(bpmInput.value, 10);
+        if (isNaN(bpm) || bpm < 40 || bpm > 240) {
+            alert("יש להזין ערך BPM בין 40 ל-240.");
+            return;
+        }
+
+        const interval = (60 / bpm) * 1000;
+
+        indicator.classList.add("active");
+        intervalId = setInterval(() => {
+            playClickSound();
+            indicator.classList.toggle("active");
+        }, interval);
+    };
+
+    const stopMetronome = () => {
+        clearInterval(intervalId);
+        intervalId = null;
+        indicator.classList.remove("active");
+    };
+
+    startStopButton.addEventListener("click", () => {
+        if (intervalId) {
+            stopMetronome();
+            startStopButton.textContent = "Start";
+        } else {
+            startMetronome();
+            startStopButton.textContent = "Stop";
+        }
+    });
+});
+
+
+// ממתינים לטעינת ה-DOM במלואו
+document.addEventListener("DOMContentLoaded", function () {
+    // בוחרים את הודעת הברכה
+    const welcomeMessage = document.getElementById("welcomeMessage");
+    const welcomeMessageInstructions = document.getElementById("welcomeMessageInstructions");
+
+    // מוסיפים אירוע לחיצה לכל העמוד
+    document.addEventListener("click", function () {
+        // מוסיפים את מחלקת ההתנדפות
+        if (welcomeMessage) welcomeMessage.classList.add("fade-out");
+        if (welcomeMessageInstructions) welcomeMessageInstructions.classList.add("fade-out");
+
+        // מסירים את האלמנט לחלוטין מה-DOM אחרי שהתנדף (1 שנייה)
+        setTimeout(() => {
+            if (welcomeMessage) welcomeMessage.style.display = "none";
+            if (welcomeMessageInstructions) welcomeMessageInstructions.style.display = "none";
+        }, 1000); // משך ההתנדפות (1 שנייה)
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const uploadButton = document.getElementById("uploadImages");
+    const fileInput = document.getElementById("fileInput");
+    const imageContainer = document.getElementById("imageContainer");
+
+    // מחיקת תמונות קיימות מראש
+    const predefinedImages = imageContainer.querySelectorAll("img");
+    predefinedImages.forEach(img => img.remove());
+
+    // פותח את חלון העלאת הקבצים
+    uploadButton.addEventListener("click", () => {
+        fileInput.click();
+    });
+
+    // טיפול בקבצים שנבחרו
+    fileInput.addEventListener("change", (event) => {
+        const files = event.target.files;
+
+        // עבור על הקבצים והוסף תמונות חדשות
+        Array.from(files).forEach((file) => {
+            const img = document.createElement("img");
+            img.src = URL.createObjectURL(file);
+            img.alt = file.name;
+            img.onload = () => URL.revokeObjectURL(img.src); // שחרור זיכרון
+            imageContainer.appendChild(img); // הוסף לדף
+        });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const uploadPdfButton = document.getElementById("uploadPdf");
+    const pdfInput = document.getElementById("pdfInput");
+    const imageContainer = document.getElementById("imageContainer");
+
+    // פותח את חלון העלאת הקבצים
+    uploadPdfButton.addEventListener("click", () => {
+        pdfInput.click();
+    });
+
+    // טיפול בקובץ PDF שנבחר
+    pdfInput.addEventListener("change", async (event) => {
+        const file = event.target.files[0];
+        if (file && file.type === "application/pdf") {
+            const fileReader = new FileReader();
+
+            fileReader.onload = async function () {
+                const pdfData = new Uint8Array(this.result);
+
+                // טעינת קובץ PDF
+                const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+
+                // נקה את הקונטיינר לתמונות
+                imageContainer.innerHTML = "";
+
+                // מעבר על כל דפי ה-PDF
+                for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+                    const page = await pdf.getPage(pageNumber);
+                    const viewport = page.getViewport({ scale: 1.5 });
+
+                    // יצירת קנבס חדש עבור כל דף
+                    const canvas = document.createElement("canvas");
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+                    const context = canvas.getContext("2d");
+
+                    // ציור הדף בקנבס
+                    const renderContext = {
+                        canvasContext: context,
+                        viewport: viewport,
+                    };
+                    await page.render(renderContext);
+
+                    // הוספת הקנבס לקונטיינר
+                    imageContainer.appendChild(canvas);
+                }
+            };
+
+            fileReader.readAsArrayBuffer(file);
+        } else {
+            alert("נא לבחור קובץ PDF בלבד.");
+        }
+    });
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const deleteButton = document.getElementById("deleteImages");
+    const imageContainer = document.getElementById("imageContainer");
+
+    // מאזין ללחיצה על כפתור מחיקת כל ה-PDF
+    deleteButton.addEventListener("click", () => {
+        imageContainer.innerHTML = ""; // מנקה את כל הדפים של ה-PDF מהקונטיינר
+    });
+});
+
+
+let scrollEnabled = true; // מצב גלילה
 let scrollInterval;
 
 // פונקציה להתחלת הגלילה
@@ -9,424 +183,152 @@ function startScroll(speed) {
     }, 4200 / speed);
 }
 
-// מאזין לאינפוט של מהירות הגלילה
+// פונקציה לעצירת הגלילה
+function stopScroll() {
+    clearInterval(scrollInterval);
+}
+
+// פונקציה לבדיקה אם אלמנט פעיל
+function isInteractiveElement(target) {
+    return ['INPUT', 'BUTTON', 'TEXTAREA', 'A'].includes(target.tagName);
+}
+
+// הפעלת גלילה כשנקבע ערך למהירות
 document.querySelector('.circle-input').addEventListener('input', function () {
     const speed = parseInt(this.value, 10) || 0;
-    if (speed === 0) {
-        clearInterval(scrollInterval);
-        return;
-    }
-    if (scrollEnabled) startScroll(speed);
-});
-
-// מאזינים לעצירת הגלילה והפעלה מחדש
-document.body.addEventListener('click', toggleScroll);
-document.querySelectorAll('img').forEach((img) => {
-    img.addEventListener('click', (e) => {
-        e.stopPropagation(); // מונע את פעולת ברירת המחדל מהדף
-        toggleScroll();
-    });
-});
-
-function toggleScroll() {
-    scrollEnabled = !scrollEnabled;
-    if (!scrollEnabled) {
-        clearInterval(scrollInterval);
+    if (speed > 0) {
+        scrollEnabled = true; // גלילה מופעלת
+        startScroll(speed); // הפעלת הגלילה מידית
     } else {
+        stopScroll(); // עצירת גלילה אם הערך 0
+    }
+});
+
+// עצירת/חידוש גלילה בעת לחיצה על הדף
+document.body.addEventListener('click', function (event) {
+    if (isInteractiveElement(event.target)) {
+        return; // אלמנטים פעילים לא מפעילים גלילה
+    }
+    scrollEnabled = !scrollEnabled;
+    if (scrollEnabled) {
         const speed = parseInt(document.querySelector('.circle-input').value, 10) || 0;
         if (speed > 0) startScroll(speed);
-    }
-}
-
-// פונקציה למחיקת תמונות
-document.getElementById('deleteImages').addEventListener('click', function () {
-    const imageContainer = document.getElementById('imageContainer');
-    const canvas = document.getElementById('pdfCanvas');
-
-    // מוחק את כל התמונות
-    imageContainer.innerHTML = '';
-
-    // מנקה את ה-PDF
-    const context = canvas.getContext('2d');
-    context.clearRect(0, 0, canvas.width, canvas.height); // מאפס את הקנבס
-});
-
-// פונקציה להעלאת תמונות חדשות
-document.getElementById('uploadImages').addEventListener('click', function () {
-    document.getElementById('fileInput').click(); // פותח את חלון העלאת הקבצים
-});
-
-document.getElementById('fileInput').addEventListener('change', function (event) {
-    const files = event.target.files;
-    const imageContainer = document.getElementById('imageContainer');
-    for (const file of files) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.alt = 'Uploaded Image';
-            imageContainer.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-    }
-});
-
-// פונקציה להעלאת קובץ PDF
-document.getElementById('uploadPdf').addEventListener('click', function () {
-    document.getElementById('pdfInput').click();
-});
-
-document.getElementById('pdfInput').addEventListener('change', function (event) {
-    const file = event.target.files[0];
-    if (file && file.type === 'application/pdf') {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const pdfData = new Uint8Array(e.target.result);
-            displayPDF(pdfData);
-        };
-        reader.readAsArrayBuffer(file);
     } else {
-        alert('אנא העלה קובץ PDF תקין');
+        stopScroll();
     }
 });
 
-// פונקציה להצגת PDF
-async function displayPDF(pdfData) {
-    const loadingTask = pdfjsLib.getDocument({ data: pdfData });
-    const pdf = await loadingTask.promise;
-
-    const container = document.getElementById('imageContainer');
-    container.innerHTML = ''; // מנקה תוכן קודם
-
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-        const page = await pdf.getPage(pageNum);
-        const scale = 1.5; // שינוי גודל לפי הצורך
-        const viewport = page.getViewport({ scale });
-
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-
-        const renderContext = {
-            canvasContext: context,
-            viewport: viewport,
-        };
-
-        await page.render(renderContext).promise;
-        container.appendChild(canvas); // מוסיף את הקנבס של הדף למכולה
-    }
-}
-
-
-document.addEventListener('DOMContentLoaded', function () {
-    const welcomeMessage = document.getElementById('welcomeMessage');
-    const welcomeMessageInstructions = document.getElementById('welcomeMessageInstructions');
-
-    // פונקציה להסתרת אלמנט עם אפקט דהייה
-    function hideElement(element) {
-        if (element) {
-            element.style.opacity = '0'; // אפקט דהייה
-            setTimeout(() => {
-                element.remove(); // הסרה מוחלטת מה-DOM
-            }, 1000); // המתנה לסיום אפקט הדהייה
-        }
-    }
-
-    // טיימרים להסתרת האלמנטים לאחר זמן קבוע
-    setTimeout(() => hideElement(welcomeMessage), 20000); // 20 שניות
-    setTimeout(() => hideElement(welcomeMessageInstructions), 20000); // 20 שניות
-
-    // מאזין לאירועים לחיצה על האלמנטים עצמם
-    if (welcomeMessage) {
-        welcomeMessage.addEventListener('click', () => hideElement(welcomeMessage));
-    }
-    if (welcomeMessageInstructions) {
-        welcomeMessageInstructions.addEventListener('click', () => hideElement(welcomeMessageInstructions));
-    }
-
-    // מאזין לאירועים לחיצה על הדף
-    document.body.addEventListener('click', (e) => {
-        // אם הלחיצה אינה על אחד האלמנטים עצמם
-        if (
-            e.target !== welcomeMessage &&
-            e.target !== welcomeMessageInstructions &&
-            !welcomeMessage.contains(e.target) &&
-            !welcomeMessageInstructions.contains(e.target)
-        ) {
-            hideElement(welcomeMessage);
-            hideElement(welcomeMessageInstructions);
-        }
+// עצירת גלילה בעת לחיצה על אלמנטים מסוימים
+document.querySelectorAll('img, button, a, input').forEach((element) => {
+    element.addEventListener('click', (event) => {
+        event.stopPropagation();
     });
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    const imageContainer = document.getElementById('imageContainer');
 
-    // הסרת התמונות הראשוניות בעת טעינת הדף
-    while (imageContainer.firstChild) {
-        imageContainer.removeChild(imageContainer.firstChild);
-    }
-});
-
-// נתיב לתיקיית SOUNDS
-const soundsPath = "./SOUNDS/";
+const audioPlayer = new Audio();
+let currentSongIndex = 0;
+let isSearchTriggered = false; // משתנה לניהול אם בוצע חיפוש
 
 // רשימת שמות קבצי השירים בתיקיית SOUNDS
-const songs = ["1.mp3", "2.mp3", "3.mp3", "4.mp3, 5.mp3", "6.mp3", "7.mp3", "8.mp3", "9.mp3", "10.mp3",
+const songs = [
+    "1.mp3", "2.mp3", "for.mp3", "4.mp3", "5.mp3", "6.mp3", "7.mp3", "8.mp3", "9.mp3", "10.mp3",
     "11.mp3", "12.mp3", "13.mp3", "14.mp3", "15.mp3", "16.mp3", "17.mp3", "18.mp3", "תופים 1.mp3", "תופים 2.mp3",
-    "תופים 3.mp3", "תופים 4.mp3", "תופים 5.mp3", "היא לא יודעת מה עובר עליי 1.mp3", "היא לא יודעת מה עובר עליי 2.mp3", "הלב שלי 1.mp3", "הלב שלי 2.mp3", "לאבא שלי יש סולם 1.mp3", "לאבא שלי יש סולם 2.mp3", "30.mp3",
+    "תופים 3.mp3", "תופים 4.mp3", "תופים 5.mp3", "היא לא יודעת מה עובר עליי 1.mp3", "היא לא יודעת מה עובר עליי 2.mp3",
+    "הלב שלי 1.mp3", "הלב שלי 2.mp3", "לאבא שלי יש סולם 1.mp3", "לאבא שלי יש סולם 2.mp3", "30.mp3",
     "31.mp3", "32.mp3", "33.mp3", "34.mp3", "35.mp3", "36.mp3", "37.mp3", "38.mp3", "39.mp3", "40.mp3",
     "41.mp3", "42.mp3", "43.mp3", "44.mp3", "45.mp3", "46.mp3", "47.mp3", "48.mp3", "49.mp3", "50.mp3",
     "51.mp3", "52.mp3", "53.mp3", "54.mp3", "55.mp3", "56.mp3", "57.mp3", "58.mp3", "59.mp3", "60.mp3",
     "61.mp3", "62.mp3", "63.mp3", "64.mp3", "65.mp3", "66.mp3", "67.mp3", "68.mp3", "69.mp3", "70.mp3",
-    "71.mp3", "72.mp3", "73.mp3", "74.mp3", "75.mp3", "76.mp3", "77.mp3", "78.mp3", "79.mp3", "80.mp3"]; // עדכן את השמות לפי הקבצים בתיקייה
-let currentSongIndex = 0;
+    "71.mp3", "72.mp3", "73.mp3", "74.mp3", "75.mp3", "76.mp3", "77.mp3", "78.mp3", "79.mp3", "80.mp3"
+];
 
-// יצירת אובייקט Audio
-let audio = new Audio(soundsPath + songs[currentSongIndex]);
-audio.loop = true; // הפעלת לופ לשיר הנוכחי
+// נתיב הקבצים (אם הם נמצאים בתיקיית "SOUNDS")
+const basePath = "./SOUNDS/";
 
-audio.volume = 1.0; // קבע את הווליום של השיר (ערך בין 0 ל-1)
-audio.play();
-
-// פונקציה לנגן/להשהות שיר
-function togglePlayPause() {
-    if (audio.paused) {
-        audio.play();
+// פונקציה לנגן שיר
+function playSong(index) {
+    if (index >= 0 && index < songs.length) {
+        const songPath = basePath + songs[index];
+        audioPlayer.src = songPath;
+        audioPlayer.play();
     } else {
-        audio.pause();
+        alert("שגיאה: השיר לא קיים ברשימה.");
+    }
+}
+
+// פונקציה להשהייה/חידוש הנגינה
+function togglePlayPause() {
+    // הגדרת השיר הראשון אם הנגן עדיין ללא מקור
+    if (!audioPlayer.src) {
+        playSong(currentSongIndex);
+    } else {
+        if (audioPlayer.paused) {
+            audioPlayer.play();
+        } else {
+            audioPlayer.pause();
+        }
     }
 }
 
 // פונקציה לנגן את השיר הבא
-function playNextSong() {
+function playNext() {
     currentSongIndex = (currentSongIndex + 1) % songs.length;
-    updateAudioSource();
+    playSong(currentSongIndex);
 }
 
 // פונקציה לנגן את השיר הקודם
-function playPrevSong() {
-    currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-    updateAudioSource();
+function playPrevious() {
+    currentSongIndex =
+        (currentSongIndex - 1 + songs.length) % songs.length;
+    playSong(currentSongIndex);
 }
 
-// פונקציה לעדכון המקור של אובייקט ה-Audio
-function updateAudioSource() {
-    audio.pause(); // עצירה של השיר הנוכחי
-    audio = new Audio(soundsPath + songs[currentSongIndex]); // יצירת אובייקט Audio חדש
-    audio.loop = true; // הפעלת לופ לשיר החדש
-    audio.play(); // ניגון השיר החדש
-}
+// פונקציה לחיפוש שיר והפעלתו
+function searchAndPlay() {
+    const searchValue = document
+        .querySelector("#searchSongInput")
+        .value.trim().toLowerCase();
 
-// הוספת מאזינים לאירועים לכפתורים
-document.getElementById("toggleButton").addEventListener("click", togglePlayPause);
-document.getElementById("nextButton").addEventListener("click", playNextSong);
-document.getElementById("prevButton").addEventListener("click", playPrevSong);
-
-const draggable = document.querySelector(".draggable");
-
-let isDragging = false;
-let offsetX = 0;
-let offsetY = 0;
-
-// התחלת הגרירה
-draggable.addEventListener("mousedown", (e) => {
-    isDragging = true;
-    offsetX = e.clientX - draggable.offsetLeft;
-    offsetY = e.clientY - draggable.offsetTop;
-    draggable.style.cursor = "grabbing"; // משנה את סמן העכבר
-});
-
-// תנועת גרירה
-document.addEventListener("mousemove", (e) => {
-    if (isDragging) {
-        draggable.style.position = "fixed";
-        draggable.style.left = `${e.clientX - offsetX}px`;
-        draggable.style.top = `${e.clientY - offsetY}px`;
-    }
-});
-
-// עצירת הגרירה
-document.addEventListener("mouseup", () => {
-    isDragging = false;
-    draggable.style.cursor = "move"; // מחזיר את הסמן למצב הרגיל
-});
-
-let audioContext = null; // התחלה ללא מופע AudioContext
-
-document.addEventListener('click', () => {
-    // בדיקה אם כבר נוצר AudioContext
-    if (!audioContext) {
-        try {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            console.log('AudioContext successfully created.');
-        } catch (error) {
-            console.error('Error creating AudioContext:', error);
-        }
-    }
-});
-
-// אלמנטים מה-DOM
-const startStopButton = document.getElementById("start-stop"); // כפתור הפעלה/עצירה
-const bpmInput = document.getElementById("bpm-input"); // קלט ה-BPM
-const indicator = document.getElementById("indicator"); // אינדיקטור ויזואלי
-
-
-// פונקציה לניגון צליל פעימה
-function playMetronome() {
-    // יצירת מתנד ומגבר
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-
-    // הגדרות המתנד והצליל
-    oscillator.type = "sine"; // סוג הגל
-    oscillator.frequency.setValueAtTime(1200, audioContext.currentTime); // תדר הצליל
-    gainNode.gain.setValueAtTime(0.080, audioContext.currentTime); // עוצמת הצליל
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5); // דעיכת הצליל
-
-    // חיבור המתנד למגבר ולרמקולים
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
-    // הפעלת הצליל
-    oscillator.start();
-    oscillator.stop(audioContext.currentTime + 0.5); // עצירה אחרי חצי שנייה
-
-    // שינוי צבע והגדלה זמנית
-    indicator.classList.add("active");
-    setTimeout(() => {
-        indicator.classList.remove("active");
-    }, 100); // זמן האפקט
-}
-
-// פונקציה להתחלת המטרונום
-function startMetronome() {
-    isRunning = true; // הגדרת מצב פעיל
-    lastTick = performance.now(); // שמירת זמן הפעימה הראשונה
-
-    // פונקציה למחזור פעימות
-    function metronomeTick() {
-        if (!isRunning) return; // יציאה אם המטרונום נעצר
-        const now = performance.now(); // הזמן הנוכחי
-        const elapsed = now - lastTick; // זמן שעבר מאז הפעימה האחרונה
-        if (elapsed >= 60000 / bpm) { // בדיקה אם עבר הזמן בין פעימות
-            lastTick = now;
-            playMetronome(); // ניגון פעימה
-        }
-        requestAnimationFrame(metronomeTick); // קריאה לפעימה הבאה
+    if (!searchValue) {
+        alert("הנא חפש שיר לפי שם והוסף 1 או 2");
+        return;
     }
 
-    metronomeTick(); // התחלת מחזור הפעימות
-    startStopButton.textContent = "Stop"; // שינוי טקסט הכפתור
-}
+    const songIndex = songs.findIndex((song) =>
+        song.toLowerCase().includes(searchValue)
+    );
 
-// פונקציה לעצירת המטרונום
-function stopMetronome() {
-    isRunning = false; // שינוי מצב המטרונום
-    startStopButton.textContent = "Start"; // שינוי טקסט הכפתור
-}
-
-// מאזין לאירוע לחיצה על כפתור הפעלה/עצירה
-startStopButton.addEventListener("click", () => {
-    if (isRunning) {
-        stopMetronome(); // עצירת המטרונום אם פעיל
+    if (songIndex !== -1) {
+        currentSongIndex = songIndex;
+        isSearchTriggered = true; // עדכון שהחיפוש הופעל
+        playSong(currentSongIndex); // הפעלת השיר מיד
     } else {
-        bpm = parseInt(bpmInput.value, 10) || 120; // עדכון BPM מקלט המשתמש
-        startMetronome(); // הפעלת המטרונום
+        alert("שגיאה: השיר לא נמצא ברשימה.");
     }
-});
-
-// פונקציה לחיפוש שיר לפי שם
-document.getElementById('searchSongButton').addEventListener('click', function () {
-    const searchInput = document.getElementById('searchSongInput').value.toLowerCase();
-    const foundIndex = songs.findIndex(song => song.toLowerCase().includes(searchInput));
-
-    if (foundIndex !== -1) {
-        currentSongIndex = foundIndex;
-        updateAudioSource(); // מעדכן ומשמיע את השיר
-    } else {
-        alert('Song not found!');
-    }
-});
-
-document.getElementById('searchSongButton').addEventListener('click', function () {
-    const searchInput = document.getElementById('searchSongInput').value.trim().toLowerCase(); // קבלת הקלט מהמשתמש
-    const foundIndex = songs.findIndex(song => song.toLowerCase().includes(searchInput)); // חיפוש השיר ברשימה
-
-    if (foundIndex !== -1) {
-        currentSongIndex = foundIndex; // עדכון האינדקס לשיר שנמצא
-        updateAudioSource(); // הפעלת השיר
-    } else {
-        alert('Song not found!'); // הודעה אם השיר לא נמצא
-    }
-});
-
-// פונקציה להצגת תוצאות חיפוש
-function displaySearchResults(results) {
-    // יצירת תיבת תוצאות (Modal או פשוט רשימה)
-    const resultsContainer = document.createElement('div');
-    resultsContainer.id = 'searchResultsContainer';
-    resultsContainer.style.position = 'fixed';
-    resultsContainer.style.top = '50%';
-    resultsContainer.style.left = '50%';
-    resultsContainer.style.transform = 'translate(-50%, -50%)';
-    resultsContainer.style.backgroundColor = '#fff';
-    resultsContainer.style.border = '1px solid #ccc';
-    resultsContainer.style.padding = '10px';
-    resultsContainer.style.zIndex = 1000;
-
-    // כותרת לתוצאות
-    const title = document.createElement('h3');
-    title.textContent = 'Choose a song:';
-    resultsContainer.appendChild(title);
-
-    // יצירת רשימת התוצאות
-    results.forEach((song) => {
-        const button = document.createElement('button');
-        button.textContent = song;
-        button.style.display = 'block';
-        button.style.margin = '5px 0';
-        button.addEventListener('click', () => {
-            currentSongIndex = songs.indexOf(song); // עדכון השיר הנבחר
-            updateAudioSource(); // הפעלת השיר
-            if (document.body.contains(resultsContainer)) {
-                document.body.removeChild(resultsContainer); // הסרת הרשימה
-            }
-        });
-        resultsContainer.appendChild(button);
-    });
-
-    // כפתור לסגירת תיבת התוצאות
-    const closeButton = document.createElement('button');
-    closeButton.textContent = 'Close';
-    closeButton.style.marginTop = '10px';
-    closeButton.addEventListener('click', () => {
-        if (document.body.contains(resultsContainer)) {
-            document.body.removeChild(resultsContainer); // הסרת הרשימה
-        }
-    });
-    resultsContainer.appendChild(closeButton);
-
-    // הוספת תיבת התוצאות לדף
-    document.body.appendChild(resultsContainer);
 }
 
-// מאזין לכפתור הפעלה
-const playButton = document.getElementById('playButton');
-if (playButton) {
-    playButton.addEventListener('click', () => {
-        const audioContext = new AudioContext();
-        // הפעלת האודיו כאן
-        const audio = new Audio('sounds/song.mp3');
-        audio.play();
-    });
-}
+// מאזינים לאירועים מהכפתורים
+document
+    .querySelector("#toggleButton")
+    .addEventListener("click", togglePlayPause);
 
-// יצירת AudioContext פעם אחת
-document.addEventListener('click', () => {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    // שאר קוד האודיו כאן
+document
+    .querySelector("#nextButton")
+    .addEventListener("click", playNext);
+
+document
+    .querySelector("#prevButton")
+    .addEventListener("click", playPrevious);
+
+document
+    .querySelector("#searchSongButton")
+    .addEventListener("click", searchAndPlay);
+
+// הפעלה חוזרת של השיר הנוכחי בסיום
+audioPlayer.addEventListener("ended", () => {
+    if (!isSearchTriggered) {
+        audioPlayer.currentTime = 0;
+        audioPlayer.play();
+    }
 });
-
-
