@@ -327,3 +327,16 @@ audioPlayer.addEventListener("ended", () => {
         audioPlayer.play();
     }
 });
+
+function playSong(index) {
+    if (index >= 0 && index < songs.length) {
+        const songPath = basePath + songs[index];
+        audioPlayer.src = songPath;
+        audioPlayer.play().catch((error) => {
+            console.error(`שגיאה בטעינת הקובץ: ${songPath}`, error);
+            alert(`שגיאה: הקובץ ${songs[index]} לא נמצא או לא נתמך.`);
+        });
+    } else {
+        alert("שגיאה: השיר לא קיים ברשימה.");
+    }
+}
