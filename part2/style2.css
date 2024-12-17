@@ -1,0 +1,110 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+#bpm-input {
+    width: 100px;
+    padding: 5px;
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+#start-stop {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#start-stop:hover {
+    background-color: #0056b3;
+}
+
+#indicator {
+    width: 50px;
+    height: 50px;
+    margin: 20px auto;
+    background-color: transparent;
+    border: 2px solid #007BFF;
+    border-radius: 50%;
+    transition: background-color 0.1s ease-in-out;
+}
+
+.button2 {
+    width: 100px;
+    height: 50px;
+    font-size: 25px;
+    color: rgb(10, 100, 22);
+    background-color: bisque;
+    border-radius: 8px;
+}
+
+.drum-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin: 20px auto;
+    max-width: 500px;
+}
+
+.drum-pad {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #007BFF;
+    color: white;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.1s, background-color 0.2s;
+}
+
+.drum-pad:hover {
+    transform: scale(1.1);
+    background-color: #0056b3;
+}
+
+.stop-button {
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #FF0000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.stop-button:hover {
+    background-color: #CC0000;
+}
+
+.ddd {
+    padding: 0;
+    width: 525px;
+    /* רוחב הריבוע */
+    height: 325px;
+    /* גובה הריבוע */
+    border: 5px solid #007BFF;
+    /* צבע ועובי הקו */
+    background-color: rgba(8, 131, 168, 0.349);
+    /* שקיפות של הרקע */
+
+    /* יישור למרכז */
+    display: flex;
+    justify-content: center;
+    /* יישור אופקי */
+    align-items: center;
+    /* יישור אנכי */
+    margin: 0 auto;
+    /* מרכזת את הריבוע בדף */
+}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Search with Save</title>
+    <link rel="stylesheet" href="styles3.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>חיפוש אקורדים</h1>
+        <input type="text" id="search-input" placeholder="Search for images..." oninput="filterImages()" />
+        <div class="gallery" id="gallery"></div>
+        <h2>שמור אקורדים</h2>
+        <div class="saved-gallery">
+
+            <button class="button2" onclick="location.href='../page2.html'">Back</button>
+
+
+            <img id="saved-image" alt="לא נשמרו אקורדים" />
+            <button id="next-btn" onclick="nextImage()">הבא</button>
+        </div>
+    </div>
+    <script src="script3.js"></script>
+</body>
+
+</html>
