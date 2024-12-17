@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Scroll Website</title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -23,7 +23,7 @@
 
     <div class="container" id="imageContainer">
         <!-- הכנס תמונות PNG מהמחשב -->
-        <img src="/images/gggg.png" alt="Image 1">
+        <img src="images/gggg.png" alt="Image 1">
         <img src="images/gggg1.png" alt="Image 2">
         <img src="images/gggg2.png" alt="Image 3">
         <img src="images/gggg3.png" alt="Image 4">
@@ -58,17 +58,13 @@
     </div>
 
 
-    <div class="drum-container">
-        <div id="searchSongContainer">
-            <input type="text" id="searchSongInput" placeholder="חפש שיר">
-            <button id="searchSongButton">🔍</button>
-        </div>
-       
-        <div class="drum-pad-container">
-            <!-- יצירת כפתורים על בסיס מערך השירים -->
-        </div>
+    <div class="draggable" id="draggable">
+        <button id="searchSongButton">🔍</button>
+        <label for="searchSongInput"></label><input type="text" id="searchSongInput" placeholder="שיר/מקצב">
+        <button id="prevButton">⬅️</button>
+        <button id="toggleButton">⏯️</button>
+        <button id="nextButton">➡️</button>
     </div>
-
 
 
 
@@ -82,7 +78,7 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 
-    <script src="./script.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>
