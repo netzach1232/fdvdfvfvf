@@ -58,19 +58,19 @@ startStopButton.addEventListener("click", () => {
 });
 
 
-// Map for sound files
 const soundFiles = {
-    kick: '../sounds/1.mp3',
-    snare: '../sounds/2.mp3',
-    hihat: '../sounds/3.mp3',
-    tom1: '../sounds/4.mp3',
-    tom2: '../sounds/5.mp3',
-    floorTom: '../sounds/6.mp3',
-    ride: '../sounds/7.mp3',
-    crash: '../sounds/8.mp3',
-    clap: '../sounds/9.mp3',
-    cowbell: '../sounds/10.mp3'
+    kick: '../SOUNDS/1.mp3',
+    snare: '../SOUNDS/2.mp3',
+    hihat: '../SOUNDS/3.mp3',
+    tom1: '../SOUNDS/4.mp3',
+    tom2: '../SOUNDS/5.mp3',
+    floorTom: '../SOUNDS/6.mp3',
+    ride: '../SOUNDS/7.mp3',
+    crash: '../SOUNDS/8.mp3',
+    clap: '../SOUNDS/9.mp3',
+    cowbell: '../SOUNDS/10.mp3'
 };
+
 
 // Store active audio elements
 const activeAudios = {};
