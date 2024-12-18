@@ -137,7 +137,19 @@ canvas {
     text-align: center;
     font-weight: bold;
     transition: opacity 1s ease;
+
+    max-width: 90%;
+    /* מגביל את הרוחב ל-90% מהמסך */
+    box-sizing: border-box;
+    /* מחשב רוחב כולל ריפוד */
+    overflow-wrap: break-word;
+    /* שובר טקסטים ארוכים */
+    word-wrap: break-word;
+    /* תמיכה רחבה יותר */
+    white-space: normal;
+    /* מבטיח שהטקסט ישבור שורות */
 }
+
 
 .button12 {
     position: fixed;
@@ -280,22 +292,21 @@ body {
 
 @media screen and (max-width: 768px) {
     .welcome-message1 {
-        font-size: 24px;
-        padding: 10px;
+        font-size: 30px;
+        /* מקטין את גודל הטקסט */
+        padding: 8px 16px;
+        /* מקטין את הריפוד */
     }
+}
 
-    button {
-        font-size: 14px;
-        height: 25px;
-        width: 25px;
-    }
-
-    .circle-container {
-        width: 30px;
-        height: 30px;
-    }
-
-    .circle-input {
-        font-size: 10px;
+@media screen and (max-width: 480px) {
+    .welcome-message1 {
+        font-size: 13px;
+        /* עוד הקטנה לטלפונים קטנים */
+        padding: 6px 12px;
+        /* ריפוד קטן יותר */
+        top: 100px;
+        /* מוריד את המיקום מעט */
+        height: 30%;
     }
 }
