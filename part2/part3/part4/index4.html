@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Recorder</title>
+    <link rel="stylesheet" href="style4.css">
+</head>
+
+<body>
+
+    <button class="button121" onclick="location.href='../../../index.html'">חזרה</button>
+
+    <div class="container">
+        <div class="icon">🎙️</div>
+        <h1>מקליט שירה</h1>
+        <div class="volume-meter">
+            <div class="volume-bar" id="volume-bar"></div>
+        </div>
+        <button class="blue" id="record-btn" data-state="start">התחל הקלטה</button>
+        <button class="blue" id="save-btn" disabled>שמור הקלטה</button>
+        <button class="blue" id="prev-btn" disabled>אחורה</button>
+        <button class="blue" id="next-btn" disabled>הבא</button>
+        <button class="red" id="delete-all-btn">מחק את כל הקלטות</button>
+        <audio id="audio-player" controls></audio>
+    </div>
+
+    <div class="container effects-container" style="position: absolute; margin-top: 440px; ">
+        <h3>Audio Effects</h3>
+
+        <!-- מחוון לקביעת עוצמת האפקטים הגלובלית -->
+        <div class="effect">
+            <label for="master-effect-level">מנטרל את כל האפקטים בהדרגה</label>
+            <input type="range" id="master-effect-level" min="0" max="1" step="0.01" value="1">
+        </div>
+
+        <!-- Reverb -->
+        <div class="effect">
+            <label for="reverb-slider">Reverb Intensity</label>
+            <input type="range" id="reverb-slider" min="0" max="1" step="0.01" value="0.5">
+        </div>
+
+        <!-- Distortion -->
+        <div class="effect">
+            <label for="distortion-slider">Distortion Amount</label>
+            <input type="range" id="distortion-slider" min="0" max="1" step="0.01" value="0.2">
+        </div>
+
+        <!-- Chorus -->
+        <div class="effect">
+            <label for="chorus-slider">Chorus Depth</label>
+            <input type="range" id="chorus-slider" min="0" max="1" step="0.01" value="0.5">
+        </div>
+
+        <!-- Echo -->
+        <div class="effect">
+            <label for="echo-delay-slider">Echo Delay (ms)</label>
+            <input type="range" id="echo-delay-slider" min="10" max="2000" step="10" value="500">
+        </div>
+
+        <!-- Pitch Shift -->
+        <div class="effect">
+            <label for="pitchshift-slider">Pitch Shift (semitones)</label>
+            <input type="range" id="pitchshift-slider" min="-12" max="12" step="1" value="0">
+        </div>
+
+        <!-- Bitcrusher -->
+        <div class="effect">
+            <label for="bitcrusher-slider">Bitcrusher Depth</label>
+            <input type="range" id="bitcrusher-slider" min="1" max="16" step="1" value="8">
+        </div>
+
+        <!-- Noise Gate -->
+        <div class="effect">
+            <label for="noisegate-slider">Noise Gate Threshold (dB)</label>
+            <input type="range" id="noisegate-slider" min="-60" max="0" step="1" value="-30">
+        </div>
+
+        <!-- Equalizer -->
+        <div class="effect">
+            <label for="equalizer-slider">Equalizer Gain (dB)</label>
+            <input type="range" id="equalizer-slider" min="-12" max="12" step="1" value="0">
+        </div>
+
+        <!-- Flanger -->
+        <div class="effect">
+            <label for="flanger-slider">Flanger Depth</label>
+            <input type="range" id="flanger-slider" min="0" max="1" step="0.01" value="0.5">
+        </div>
+
+        <!-- Phaser -->
+        <div class="effect">
+            <label for="phaser-slider">Phaser Intensity</label>
+            <input type="range" id="phaser-slider" min="0" max="1" step="0.01" value="0.5">
+        </div>
+
+        <!-- Tremolo -->
+        <div class="effect">
+            <label for="tremolo-slider">Tremolo Rate (Hz)</label>
+            <input type="range" id="tremolo-slider" min="0.1" max="20" step="0.1" value="5">
+        </div>
+
+        <!-- Compressor -->
+        <div class="effect">
+            <label for="compressor-slider">Compression Ratio</label>
+            <input type="range" id="compressor-slider" min="1" max="20" step="0.1" value="4">
+        </div>
+
+        <!-- Stereo Widener -->
+        <div class="effect">
+            <label for="stereo-slider">Stereo Width</label>
+            <input type="range" id="stereo-slider" min="0" max="1" step="0.01" value="0.5">
+        </div>
+
+        <!-- Auto-Wah -->
+        <div class="effect">
+            <label for="autowah-slider">Auto-Wah Intensity</label>
+            <input type="range" id="autowah-slider" min="0" max="1" step="0.01" value="0.5">
+        </div>
+
+        <!-- Vibrato -->
+        <div class="effect">
+            <label for="vibrato-slider">Vibrato Depth</label>
+            <input type="range" id="vibrato-slider" min="0" max="1" step="0.01" value="0.5">
+        </div>
+
+        <!-- Delay -->
+        <div class="effect">
+            <label for="delay-slider">Delay Time (ms)</label>
+            <input type="range" id="delay-slider" min="0" max="1000" step="10" value="300">
+        </div>
+
+        <!-- Gain -->
+        <div class="effect">
+            <label for="gain-slider">Gain</label>
+            <input type="range" id="gain-slider" min="0" max="2" step="0.01" value="1">
+        </div>
+
+        <!-- Dynamic Range Compression -->
+        <div class="effect">
+            <label for="drc-slider">Dynamic Range Compression</label>
+            <input type="range" id="drc-slider" min="0" max="10" step="0.1" value="5">
+        </div>
+
+        <!-- Stereo Imager -->
+        <div class="effect">
+            <label for="imager-slider">Stereo Imaging Intensity</label>
+            <input type="range" id="imager-slider" min="0" max="1" step="0.01" value="0.5">
+        </div>
+
+        <!-- Harmonic Exciter -->
+        <div class="effect">
+            <label for="exciter-slider">Harmonic Exciter Amount</label>
+            <input type="range" id="exciter-slider" min="0" max="1" step="0.01" value="0.5">
+        </div>
+
+        <!-- De-Esser -->
+        <div class="effect">
+            <label for="deesser-slider">De-Esser Threshold</label>
+            <input type="range" id="deesser-slider" min="0" max="1" step="0.01" value="0.3">
+        </div>
+
+        <!-- Sub Bass Enhancer -->
+        <div class="effect">
+            <label for="subbass-slider">Sub Bass Enhancer</label>
+            <input type="range" id="subbass-slider" min="0" max="1" step="0.01" value="0.5">
+        </div>
+
+        <!-- Multiband Compression -->
+        <div class="effect">
+            <label for="multiband-compression-slider">Multiband Compression</label>
+            <input type="range" id="multiband-compression-slider" min="0" max="1" step="0.01" value="0.5">
+        </div>
+    </div>
+
+    <script src="lame.min.js"></script>
+
+    <script src="script4.js"></script>
+</body>
+
+
+</html>
