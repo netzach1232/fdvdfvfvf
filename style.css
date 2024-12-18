@@ -301,12 +301,12 @@ body {
 
 @media screen and (max-width: 480px) {
     .welcome-message1 {
-        font-size: 13px;
+        font-size: 16px;
         /* עוד הקטנה לטלפונים קטנים */
         padding: 6px 12px;
         /* ריפוד קטן יותר */
         top: 100px;
         /* מוריד את המיקום מעט */
-        height: 30%;
+        height: 60%;
     }
 }
