@@ -68,3 +68,19 @@ h2 {
     display: none;
     /* Hide saved image by default */
 }
+
+.button3 {
+    background-color: rgba(153, 77, 5, 0.555);
+    border-radius: 50px;
+    border: none;
+    /* הסרת גבול חיצוני */
+    outline: none;
+}
+
+.button2 {
+    background-color: rgba(5, 153, 121, 0.582);
+    border-radius: 50px;
+    border: none;
+    /* הסרת גבול חיצוני */
+    outline: none;
+}
