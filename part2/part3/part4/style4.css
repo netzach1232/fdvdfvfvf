@@ -166,9 +166,10 @@ input[type="range"] {
     /* הסרת גבול חיצוני */
     outline: none;
     position: fixed;
-    top: 100px;
-    right: 1330px;
+    top: 20px;
+    right: 310px;
     width: 100px;
     height: 50px;
     font-size: 23px;
+    z-index: 1000;
 }
