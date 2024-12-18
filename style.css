@@ -277,3 +277,25 @@ body {
     pointer-events: none;
     /* מניעת אינטראקציה עם האלמנט במהלך ההתנדפות */
 }
+
+@media screen and (max-width: 768px) {
+    .welcome-message1 {
+        font-size: 24px;
+        padding: 10px;
+    }
+
+    button {
+        font-size: 14px;
+        height: 25px;
+        width: 25px;
+    }
+
+    .circle-container {
+        width: 30px;
+        height: 30px;
+    }
+
+    .circle-input {
+        font-size: 10px;
+    }
+}
