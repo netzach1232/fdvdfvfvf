@@ -175,12 +175,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // קריאה לפונקציה הראשית
     setupAudioPlayerWithEffects();
 
-    // פונקציה להשגת זרם המיקרופון פעם אחת בלבד
     const getMicrophoneStream = async () => {
         if (!micStream) {
             try {
-                micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                console.log('Microphone stream initialized.');
+                // בקשת גישה למיקרופון הראשי של המכשיר בלבד
+                micStream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        autoGainControl: false, // מניעת שליטה אוטומטית
+                        noiseSuppression: true, // צמצום רעשים
+                        echoCancellation: false, // מניעת עיבוד של שיחות
+                    }
+                });
+                console.log('Microphone stream initialized using default device.');
             } catch (err) {
                 console.error('Error accessing microphone:', err);
                 alert('Unable to access microphone. Please check permissions.');
